@@ -1,0 +1,131 @@
+<html ng-app="budgetPlanner">
+
+<head>
+  <title>Budget Planner</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-image: url('budget,gif.gif');
+    }
+
+    .container {
+      text-align: center;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2, h3 {
+      color: #333;
+    }
+
+    .budget-input {
+      margin-bottom: 10px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 200px;
+    }
+
+    .expenses-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .expenses-table th,
+    .expenses-table td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+</head>
+
+<body ng-controller="BudgetController as budgetCtrl">
+  <div class="container">
+    <h1>Budget Planner</h1>
+    <div>
+      <label for="income">Income:</label>
+      <input type="number" id="income" class="budget-input" ng-model="budgetCtrl.income">
+    </div>
+    <div>
+      <label for="expense">Expense:</label>
+      <input type="text" id="expense" class="budget-input" ng-model="budgetCtrl.expenseName" placeholder="Expense name">
+      <input type="number" id="expense-amount" class="budget-input" ng-model="budgetCtrl.expenseAmount" placeholder="Amount">
+      <button ng-click="budgetCtrl.addExpense()">Add Expense</button>
+    </div>
+    <h2>Expenses</h2>
+    <table class="expenses-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="expense in budgetCtrl.expenses">
+          <td>{{ expense.name }}</td>
+          <td>{{ expense.amount }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3>Total Expenses: {{ budgetCtrl.getTotalExpenses() }}</h3>
+    <h3>Remaining Budget: {{ budgetCtrl.getRemainingBudget() }}</h3>
+  </div>
+
+  <script>
+    var app = angular.module('budgetPlanner', []);
+
+    app.controller('BudgetController', function () {
+      var vm = this;
+      vm.income = 0;
+      vm.expenseName = '';
+      vm.expenseAmount = 0;
+      vm.expenses = [];
+
+      vm.addExpense = function () {
+        vm.expenses.push({
+          name: vm.expenseName,
+          amount: vm.expenseAmount
+        });
+        vm.expenseName = '';
+        vm.expenseAmount = 0;
+      };
+
+      vm.getTotalExpenses = function () {
+        var total = 0;
+        for (var i = 0; i < vm.expenses.length; i++) {
+          total += vm.expenses[i].amount;
+        }
+        return total;
+      };
+
+      vm.getRemainingBudget = function () {
+        return vm.income - vm.getTotalExpenses();
+      };
+    });
+  </script>
+</body>
+</html>
